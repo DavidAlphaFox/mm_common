@@ -68,7 +68,7 @@ month_to_integer("Dec")-> 12.
 %                                               ;  M:-12; N:+1; Y:+12
 %             / ( ("+" / "-") 4DIGIT )          ; Local differential
 %                                               ;  hours+min. (HHMM)
-zone_to_integer("UT")-> {0,0};
+zone_to_integer("UT")->  {0,0};
 zone_to_integer("GMT")-> {0,0};
 zone_to_integer("EST")-> {-5,0};
 zone_to_integer("EDT")-> {-4,0};
@@ -78,14 +78,15 @@ zone_to_integer("MST")-> {-7,0};
 zone_to_integer("MDT")-> {-6,0};
 zone_to_integer("PST")-> {-8,0};
 zone_to_integer("PDT")-> {-7,0};
-zone_to_integer("A")-> {-1,0};
-zone_to_integer("M")-> {-12,0};
-zone_to_integer("N")-> {1,0};
-zone_to_integer("Y")-> {12,0};
+zone_to_integer("A")->   {-1,0};
+zone_to_integer("M")->   {-12,0};
+zone_to_integer("N")->   {1,0};
+zone_to_integer("Y")->   {12,0};
 zone_to_integer(Z)-> 
 	Operator = string:substr(Z,1,1),
 	Hour = string:substr(Z,2,2),
 	Min = string:substr(Z,4,2),
+	
 	case Operator of
 		"+" ->
 			{erlang:list_to_integer(Hour),erlang:list_to_integer(Min)};

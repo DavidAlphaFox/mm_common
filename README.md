@@ -1,4 +1,4 @@
-tea_crypto
+mm_common
 ==========
 
-A Tiny Encryption Algorithm implementation
+Common files of my projects of Erlang
