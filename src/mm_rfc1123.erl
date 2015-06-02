@@ -92,12 +92,29 @@ zone_to_integer(Z)->
 		"-"->
 			{0 - erlang:list_to_integer(Hour),0 - erlang:list_to_integer(Min)}
 	end.
+
 % date        =  1*2DIGIT month 2*4DIGIT        ; day month year
 %                                               ; e.g. 20 Jun 1987
 parse_date(Date)->
 	DateTokens = string:tokens(Date,[?SEPARATOR_SPACE]),
 	[Day,Month,Year] = DateTokens,
 	{erlang:list_to_intger(Year),month_to_integer(Month),erlang:list_to_intger(Day)}.
+
+% time        =  hour zone                      ; ANSI and Military
+
+% hour        =  2DIGIT ":" 2DIGIT [":" 2DIGIT] ; 00:00:00 - 23:59:59
+                                                 
+% zone        =  "UT"  / "GMT"                  ; Universal Time
+%                                               ; North American : UT
+%             /  "EST" / "EDT"                  ;  Eastern:  - 5/ - 4
+%             /  "CST" / "CDT"                  ;  Central:  - 6/ - 5
+%             /  "MST" / "MDT"                  ;  Mountain: - 7/ - 6
+%             /  "PST" / "PDT"                  ;  Pacific:  - 8/ - 7
+%             /  1ALPHA                         ; Military: Z = UT;
+%                                               ;  A:-1; (J not used)
+%                                               ;  M:-12; N:+1; Y:+12
+%             / ( ("+" / "-") 4DIGIT )          ; Local differential
+%                                               ;  hours+min. (HHMM)
 parse_time(Time)->
 	TimeTokens = string:tokens(Time,[?SEPARATOR_SPACE,?SEPARATOR_COLON]),
 	case erlang:length(TimeTokens) of
