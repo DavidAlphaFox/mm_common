@@ -1,4 +1,4 @@
--module(mm_rfc1123).
+-module(mm_date_rfc1123).
 -export([parse/1]).
 -export([format/0,format/1]).
 % Date and Time Specification of RFC 1123

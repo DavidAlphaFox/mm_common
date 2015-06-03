@@ -13,19 +13,19 @@ leap_year(Year)->
 			Y4 = Year div 4,
 			Y3 == Y4
 	end.
-day_of_month(1)-> 31;
-day_of_month(3)-> 31;
-day_of_month(4)-> 30;
-day_of_month(5)-> 31;
-day_of_month(6)-> 30;
-day_of_month(7)-> 31;
-day_of_month(8)-> 31;
-day_of_month(9)-> 30;
-day_of_month(10)-> 31;
-day_of_month(11)-> 30;
-day_of_month(12)-> 31.
+days_of_month(1)-> 31;
+days_of_month(3)-> 31;
+days_of_month(4)-> 30;
+days_of_month(5)-> 31;
+days_of_month(6)-> 30;
+days_of_month(7)-> 31;
+days_of_month(8)-> 31;
+days_of_month(9)-> 30;
+days_of_month(10)-> 31;
+days_of_month(11)-> 30;
+days_of_month(12)-> 31.
 
-day_of_month(Year,Month)->
+days_of_month(Year,Month)->
 	if 
 		Month == 2 ->
 			case leap_year(Year) of 
@@ -35,9 +35,9 @@ day_of_month(Year,Month)->
 					28
 			end;
 		Month == 0 ->
-			day_of_month(12);
+			days_of_month(12);
 		true->
-			day_of_month(Month)
+			days_of_month(Month)
 	end.
 
 adjust({Year,Month,Day},{Hour,Min,Sec})->
@@ -46,8 +46,8 @@ adjust({Year,Month,Day},{Hour,Min,Sec})->
 	{DateTuple2,TimeTuple}.
 
 adjust_date({Year,Month,Day})->
-	DayOfMonth = day_of_month(Year,Month),
-	DayOfPrevMonth = day_of_month(Year,Month -1),
+	DayOfMonth = days_of_month(Year,Month),
+	DayOfPrevMonth = days_of_month(Year,Month -1),
 	if
 		Day > DayOfMonth ->
 			adjust_date({Year,Month + 1 ,  Day - DayOfMonth});
