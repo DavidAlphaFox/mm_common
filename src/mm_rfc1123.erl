@@ -1,5 +1,6 @@
 -module(mm_rfc1123).
--export([parse_date/1,parse_time/1]).
+-export([parse/1]).
+-export([format/0,format/1]).
 % Date and Time Specification of RFC 1123
 % BNF Syntax 
 
@@ -42,6 +43,15 @@ day_to_integer("Thu")-> 4;
 day_to_integer("Fri")-> 5;
 day_to_integer("Sat")-> 6;
 day_to_integer("Sun")-> 7.
+
+integer_to_day(1)-> "Mon";
+integer_to_day(2)-> "Tue";
+integer_to_day(3)-> "Wed";
+integer_to_day(4)-> "Thu";
+integer_to_day(5)-> "Fri";
+integer_to_day(6)-> "Sat";
+integer_to_day(7)-> "Sun".
+
 % month       =  "Jan"  /  "Feb" /  "Mar"  /  "Apr"
 %             /  "May"  /  "Jun" /  "Jul"  /  "Aug"
 %             /  "Sep"  /  "Oct" /  "Nov"  /  "Dec"
@@ -57,6 +67,20 @@ month_to_integer("Sep")-> 9;
 month_to_integer("Oct")-> 10;
 month_to_integer("Nov")-> 11;
 month_to_integer("Dec")-> 12.
+
+integer_to_month(1)-> "Jan";
+integer_to_month(2)-> "Feb";
+integer_to_month(3)-> "Mar";
+integer_to_month(4)-> "Apr";
+integer_to_month(5)-> "May";
+integer_to_month(6)-> "Jun";
+integer_to_month(7)-> "Jul";
+integer_to_month(8)-> "Aug";
+integer_to_month(9)-> "Sep";
+integer_to_month(10)-> "Oct";
+integer_to_month(11)-> "Nov";
+integer_to_month(12)-> "Dec".
+
 % zone        =  "UT"  / "GMT"                  ; Universal Time
 %                                               ; North American : UT
 %             /  "EST" / "EDT"                  ;  Eastern:  - 5/ - 4
@@ -99,7 +123,7 @@ zone_to_integer(Z)->
 parse_date(Date)->
 	DateTokens = string:tokens(Date,[?SEPARATOR_SPACE]),
 	[Day,Month,Year] = DateTokens,
-	{erlang:list_to_intger(Year),month_to_integer(Month),erlang:list_to_intger(Day)}.
+	{erlang:list_to_integer(Year),month_to_integer(Month),erlang:list_to_integer(Day)}.
 
 % time        =  hour zone                      ; ANSI and Military
 
@@ -134,4 +158,32 @@ parse_time(Time)->
 			{HourInteger + HourDiff,MinInteger + MinDiff,SecInteger}
 	end.
 
+parse(DateTime)->
+	Length = erlang:length(DateTime),
+	Colon = string:chr(DateTime,?SEPARATOR_COLON),
+	Date = string:substr(DateTime,6,Colon - 9),
+	Time = string:substr(DateTime,Colon - 2, Length - Colon + 3),
+	DateTuple = parse_date(Date),
+	TimeTuple = parse_time(Time),
+	mm_date_common:adjust(DateTuple,TimeTuple).
+
+format() ->
+    {{YYYY,MM,DD},{Hour,Min,Sec}} = calendar:universal_time(),
+    DayOfWeek = calendar:day_of_the_week({YYYY,MM,DD}),
+    lists:flatten(
+      io_lib:format("~s, ~2.2.0w ~3.s ~4.4.0w ~2.2.0w:~2.2.0w:~2.2.0w GMT",
+		    [integer_to_day(DayOfWeek),DD,integer_to_month(MM),YYYY,Hour,Min,Sec])).
+
+format(undefined) ->
+    undefined;
+format(LocalTime) ->
+    {{YYYY,MM,DD},{Hour,Min,Sec}} = 
+	case calendar:local_time_to_universal_time_dst(LocalTime) of
+	    [Gmt]   -> Gmt;
+	    [_,Gmt] -> Gmt
+	end,
+    DayOfWeek = calendar:day_of_the_week({YYYY,MM,DD}),
+    lists:flatten(
+      io_lib:format("~s, ~2.2.0w ~3.s ~4.4.0w ~2.2.0w:~2.2.0w:~2.2.0w GMT",
+		    [integer_to_day(DayOfWeek),DD,integer_to_month(MM),YYYY,Hour,Min,Sec])).
 
