@@ -6,11 +6,11 @@ parse(Date)->
 	try
     	case DateType of
 	    	$\, ->
-		 		mm_date_rfc1123:parse(Date);
+				mm_date_rfc1123:parse(Date);
 	     	$\  ->
 	     		mm_date_asctime:parse(Date);
 	     	_ ->
-		 		mm_date_rfc1036:parse(Date)
+				mm_date_rfc1036:parse(Date)
 		end
 	catch 
 		_Any:_Reason->
