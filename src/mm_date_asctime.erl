@@ -53,26 +53,26 @@ integer_to_month(12)-> "Dec".
 
 
 parse_time(Time)->
-	TimeTokens = string:tokens(Time,[?SEPARATOR_COLON]),
-	[Hour,Min,Sec] = TimeTokens,
-	HourInteger = erlang:list_to_integer(Hour),
-	MinInteger = erlang:list_to_integer(Min),
-	SecInteger = erlang:list_to_integer(Sec),
-	{HourInteger,MinInteger,SecInteger}.
+    TimeTokens = string:tokens(Time,[?SEPARATOR_COLON]),
+    [Hour,Min,Sec] = TimeTokens,
+    HourInteger = erlang:list_to_integer(Hour),
+    MinInteger = erlang:list_to_integer(Min),
+    SecInteger = erlang:list_to_integer(Sec),
+    {HourInteger,MinInteger,SecInteger}.
 
 %Format Sun Nov  6 08:49:37 1994 
 parse(DateTime)->
-	Length = erlang:length(DateTime),
-	DateTimeSub = string:substr(DateTime,5,Length - 4),
-	Tokens = string:tokens(DateTimeSub,[?SEPARATOR_SPACE]),
-	[Month,Date,Time,Year] = Tokens,
-	TimeTuple = parse_time(Time),
-	{{erlang:list_to_integer(Year),month_to_integer(Month),erlang:list_to_integer(Date)},
-	TimeTuple}.
+    Length = erlang:length(DateTime),
+    DateTimeSub = string:substr(DateTime,5,Length - 4),
+    Tokens = string:tokens(DateTimeSub,[?SEPARATOR_SPACE]),
+    [Month,Date,Time,Year] = Tokens,
+    TimeTuple = parse_time(Time),
+    {{erlang:list_to_integer(Year),month_to_integer(Month),erlang:list_to_integer(Date)},
+    TimeTuple}.
 
 format() ->
     {{YYYY,MM,DD},{Hour,Min,Sec}} = calendar:universal_time(),
     DayOfWeek = calendar:day_of_the_week({YYYY,MM,DD}),
     lists:flatten(
       io_lib:format("~s ~3.s ~2.2w ~2.2.0w:~2.2.0w:~2.2.0w ~4.4.0w",
-		    [integer_to_day(DayOfWeek),integer_to_month(MM),DD,Hour,Min,Sec,YYYY])).
+            [integer_to_day(DayOfWeek),integer_to_month(MM),DD,Hour,Min,Sec,YYYY])).
