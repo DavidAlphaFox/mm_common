@@ -51,7 +51,7 @@ adjust_date({Year,Month,Day})->
 	if
 		Day > DayOfMonth ->
 			adjust_date({Year,Month + 1 ,  Day - DayOfMonth});
-		DayOfMonth == 0 ->
+		Day == 0 ->
 			adjust_date({Year,Month -1 , DayOfPrevMonth});
 		Month > 12 ->
 			adjust_date({Year + 1, Month -12 ,Day});
