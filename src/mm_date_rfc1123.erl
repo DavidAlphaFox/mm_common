@@ -157,7 +157,7 @@ parse_time(Time)->
 			{HourDiff,MinDiff} = zone_to_integer(Zone),
 			{HourInteger + HourDiff,MinInteger + MinDiff,SecInteger}
 	end.
-
+%Format Sun, 06 Nov 1994 08:49:37 GMT 
 parse(DateTime)->
 	Length = erlang:length(DateTime),
 	Colon = string:chr(DateTime,?SEPARATOR_COLON),

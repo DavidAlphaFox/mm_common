@@ -50,7 +50,7 @@ integer_to_month(9)-> "Sep";
 integer_to_month(10)-> "Oct";
 integer_to_month(11)-> "Nov";
 integer_to_month(12)-> "Dec".
-%Format Sun Nov  6 08:49:37 1994 
+
 
 parse_time(Time)->
 	TimeTokens = string:tokens(Time,[?SEPARATOR_COLON]),
@@ -60,6 +60,7 @@ parse_time(Time)->
 	SecInteger = erlang:list_to_integer(Sec),
 	{HourInteger,MinInteger,SecInteger}.
 
+%Format Sun Nov  6 08:49:37 1994 
 parse(DateTime)->
 	Length = erlang:length(DateTime),
 	DateTimeSub = string:substr(DateTime,5,Length - 4),
