@@ -107,23 +107,23 @@ zone_to_integer("M")->   {-12,0};
 zone_to_integer("N")->   {1,0};
 zone_to_integer("Y")->   {12,0};
 zone_to_integer(Z)-> 
-	Operator = string:substr(Z,1,1),
-	Hour = string:substr(Z,2,2),
-	Min = string:substr(Z,4,2),
-	
-	case Operator of
-		"+" ->
-			{erlang:list_to_integer(Hour),erlang:list_to_integer(Min)};
-		"-"->
-			{0 - erlang:list_to_integer(Hour),0 - erlang:list_to_integer(Min)}
-	end.
+    Operator = string:substr(Z,1,1),
+    Hour = string:substr(Z,2,2),
+    Min = string:substr(Z,4,2),
+    
+    case Operator of
+        "+" ->
+            {erlang:list_to_integer(Hour),erlang:list_to_integer(Min)};
+        "-"->
+            {0 - erlang:list_to_integer(Hour),0 - erlang:list_to_integer(Min)}
+    end.
 
 % date        =  1*2DIGIT month 2*4DIGIT        ; day month year
 %                                               ; e.g. 20 Jun 1987
 parse_date(Date)->
-	DateTokens = string:tokens(Date,[?SEPARATOR_SPACE]),
-	[Day,Month,Year] = DateTokens,
-	{erlang:list_to_integer(Year),month_to_integer(Month),erlang:list_to_integer(Day)}.
+    DateTokens = string:tokens(Date,[?SEPARATOR_SPACE]),
+    [Day,Month,Year] = DateTokens,
+    {erlang:list_to_integer(Year),month_to_integer(Month),erlang:list_to_integer(Day)}.
 
 % time        =  hour zone                      ; ANSI and Military
 
@@ -141,49 +141,49 @@ parse_date(Date)->
 %             / ( ("+" / "-") 4DIGIT )          ; Local differential
 %                                               ;  hours+min. (HHMM)
 parse_time(Time)->
-	TimeTokens = string:tokens(Time,[?SEPARATOR_SPACE,?SEPARATOR_COLON]),
-	case erlang:length(TimeTokens) of
-		3->
-			[Hour,Min,Zone] = TimeTokens,
-			HourInteger = erlang:list_to_integer(Hour),
-			MinInteger = erlang:list_to_integer(Min),
-			{HourDiff,MinDiff} = zone_to_integer(Zone),
-			{HourInteger + HourDiff,MinInteger + MinDiff,0};
-		4 ->
-			[Hour,Min,Sec,Zone] = TimeTokens,
-			HourInteger = erlang:list_to_integer(Hour),
-			MinInteger = erlang:list_to_integer(Min),
-			SecInteger = erlang:list_to_integer(Sec),
-			{HourDiff,MinDiff} = zone_to_integer(Zone),
-			{HourInteger + HourDiff,MinInteger + MinDiff,SecInteger}
-	end.
+    TimeTokens = string:tokens(Time,[?SEPARATOR_SPACE,?SEPARATOR_COLON]),
+    case erlang:length(TimeTokens) of
+        3->
+            [Hour,Min,Zone] = TimeTokens,
+            HourInteger = erlang:list_to_integer(Hour),
+            MinInteger = erlang:list_to_integer(Min),
+            {HourDiff,MinDiff} = zone_to_integer(Zone),
+            {HourInteger + HourDiff,MinInteger + MinDiff,0};
+        4 ->
+            [Hour,Min,Sec,Zone] = TimeTokens,
+            HourInteger = erlang:list_to_integer(Hour),
+            MinInteger = erlang:list_to_integer(Min),
+            SecInteger = erlang:list_to_integer(Sec),
+            {HourDiff,MinDiff} = zone_to_integer(Zone),
+            {HourInteger + HourDiff,MinInteger + MinDiff,SecInteger}
+    end.
 %Format Sun, 06 Nov 1994 08:49:37 GMT 
 parse(DateTime)->
-	Length = erlang:length(DateTime),
-	Colon = string:chr(DateTime,?SEPARATOR_COLON),
-	Date = string:substr(DateTime,6,Colon - 9),
-	Time = string:substr(DateTime,Colon - 2, Length - Colon + 3),
-	DateTuple = parse_date(Date),
-	TimeTuple = parse_time(Time),
-	mm_date_common:adjust(DateTuple,TimeTuple).
+    Length = erlang:length(DateTime),
+    Colon = string:chr(DateTime,?SEPARATOR_COLON),
+    Date = string:substr(DateTime,6,Colon - 9),
+    Time = string:substr(DateTime,Colon - 2, Length - Colon + 3),
+    DateTuple = parse_date(Date),
+    TimeTuple = parse_time(Time),
+    mm_date_common:adjust(DateTuple,TimeTuple).
 
 format() ->
     {{YYYY,MM,DD},{Hour,Min,Sec}} = calendar:universal_time(),
     DayOfWeek = calendar:day_of_the_week({YYYY,MM,DD}),
     lists:flatten(
       io_lib:format("~s, ~2.2.0w ~3.s ~4.4.0w ~2.2.0w:~2.2.0w:~2.2.0w GMT",
-		    [integer_to_day(DayOfWeek),DD,integer_to_month(MM),YYYY,Hour,Min,Sec])).
+            [integer_to_day(DayOfWeek),DD,integer_to_month(MM),YYYY,Hour,Min,Sec])).
 
 format(undefined) ->
     undefined;
 format(LocalTime) ->
     {{YYYY,MM,DD},{Hour,Min,Sec}} = 
-	case calendar:local_time_to_universal_time_dst(LocalTime) of
-	    [Gmt]   -> Gmt;
-	    [_,Gmt] -> Gmt
-	end,
+    case calendar:local_time_to_universal_time_dst(LocalTime) of
+        [Gmt]   -> Gmt;
+        [_,Gmt] -> Gmt
+    end,
     DayOfWeek = calendar:day_of_the_week({YYYY,MM,DD}),
     lists:flatten(
       io_lib:format("~s, ~2.2.0w ~3.s ~4.4.0w ~2.2.0w:~2.2.0w:~2.2.0w GMT",
-		    [integer_to_day(DayOfWeek),DD,integer_to_month(MM),YYYY,Hour,Min,Sec])).
+            [integer_to_day(DayOfWeek),DD,integer_to_month(MM),YYYY,Hour,Min,Sec])).
 
