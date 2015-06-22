@@ -1,10 +1,13 @@
 -module(mm_string_common).
 -export([to_hex/1]).
 
-to_hex(Bin) ->
+
+to_hex(Bin) when erlang:is_binary(Bin)->
 	L0 = binary_to_list(Bin),
 	L1 = lists:flatten(list_to_hex(L0)),
-	erlang:list_to_binary(L1).
+	erlang:list_to_binary(L1);
+to_hex(List) ->
+	lists:flatten(list_to_hex(List)).
 
 list_to_hex(L) ->
 	lists:map(fun(X) -> int_to_hex(X) end, L).
